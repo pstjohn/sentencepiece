@@ -116,16 +116,16 @@ TrainerModel::SentencePieces Trainer::MakeSeedSentencePieces() const {
     array.push_back(kSentenceBoundary);  // sentence boundary marker.
   }
 
-  const int n = array.size();
-  std::vector<int> SA(n);  // suffix array
-  std::vector<int> L(n);   // left boundaries of internal node
-  std::vector<int> R(n);   // right boundaries of internal node
-  std::vector<int> D(n);   // depths of internal node
+  size_t n = array.size();
+  std::vector<size_t> SA(n);  // suffix array
+  std::vector<size_t> L(n);   // left boundaries of internal node
+  std::vector<size_t> R(n);   // right boundaries of internal node
+  std::vector<size_t> D(n);   // depths of internal node
 
   // Makes a suffix array to extract all sub strings occurring
   // more than 2 times in the sentence.
-  constexpr int kAlphabetSize = 0x110000;  // All UCS4 range.
-  int node_num = 0;
+  size_t kAlphabetSize = 0x110000;  // All UCS4 range.
+  size_t node_num = 0;
   LOG(INFO) << "Making suffix array...";
   CHECK_EQ(0, esaxx(array.begin(), SA.begin(), L.begin(), R.begin(), D.begin(),
                     n, kAlphabetSize, node_num));
@@ -393,8 +393,8 @@ TrainerModel::SentencePieces Trainer::PruneSentencePieces(
     }
   }
 
-  const int pruned_size =
-      std::max<int>(desired_vocab_size_,
+  size_t pruned_size =
+      std::max<size_t>(desired_vocab_size_,
                     trainer_spec_.shrinking_factor() * sentencepieces.size());
 
   // Keeps trainer_spec_.shrinking_factor * sentencepieces.size() pieces.
@@ -432,15 +432,14 @@ TrainerModel::SentencePieces Trainer::FinalizeSentencePieces(
     }
   }
 
-  const int vocab_size_size = trainer_spec_.vocab_size() - meta_pieces_.size();
-  CHECK_GT(vocab_size_size, 0);
+  size_t vocab_size_size = trainer_spec_.vocab_size() - meta_pieces_.size();
 
   // Then keeps sentencepieces with higher scores.
   for (const auto &w : Sorted(sentencepieces)) {
     if (port::ContainsKey(final_sentencepieces, w.first)) {
       continue;
     }
-    if (static_cast<size_t>(vocab_size_size) == final_sentencepieces.size()) {
+    if (vocab_size_size == final_sentencepieces.size()) {
       break;
     }
     final_sentencepieces[w.first] = w.second;

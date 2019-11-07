@@ -326,7 +326,8 @@ saisxx(string_type T, sarray_type SA, index_type n, index_type k = 256) {
   int err;
   if((n < 0) || (k <= 0)) { return -1; }
   if(n <= 1) { if(n == 1) { SA[0] = 0; } return 0; }
-  try { err = saisxx_private::suffixsort(T, SA, 0, n, k, false); }
+  size_t z = 0;
+  try { err = saisxx_private::suffixsort(T, SA, z, n, k, false); }
   catch(...) { err = -2; }
   return err;
 }
@@ -348,7 +349,8 @@ typedef typename std::iterator_traits<string_type>::value_type char_type;
   if((n < 0) || (k <= 0)) { return -1; }
   if(n <= 1) { if(n == 1) { U[0] = T[0]; } return n; }
   try {
-    pidx = saisxx_private::suffixsort(T, A, 0, n, k, true);
+    size_t z = 0;
+    pidx = saisxx_private::suffixsort(T, A, z, n, k, true);
     if(0 <= pidx) {
       U[0] = T[n - 1];
       for(i = 0; i < pidx; ++i) { U[i + 1] = (char_type)A[i]; }
